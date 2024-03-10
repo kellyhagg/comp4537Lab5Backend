@@ -14,7 +14,7 @@ const HOST = "sql3.freesqldatabase.com";
 const USER = "sql3690024";
 const PASSWORD = "eUfYHeHLgF";
 const DATABASE = "sql3690024";
-const PORT = 3306;
+const PORT = process.env.PORT || 3306;
 
 const con = mysql.createPool({
   host: HOST,
@@ -111,6 +111,6 @@ http.createServer((req, res) => {
     res.end();
   }
 
-}).listen(PORT);
+}).listen(PORT, () => console.log(`Server is running and listening on port: ${PORT}`));
 
 console.log("Server is running and listening on port: " + PORT);
