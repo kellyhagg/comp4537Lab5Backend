@@ -72,6 +72,12 @@ http.createServer((req, res) => {
     req.on("end", () => {
       let data = JSON.parse(body);
 
+      // Validate the SQL query inside the POST data
+      if (!isValidQuery(data.query)) {
+        res.writeHead(403, { 'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*' });
+        res.end("Forbidden operation. Only SELECT and INSERT queries are allowed.");
+        return;
+      }
 
       con.query(createTableQuery, (err) => {
         if (err) {
@@ -94,6 +100,13 @@ http.createServer((req, res) => {
     let sql = pathname.substring(pathname.lastIndexOf('/') + 1);
     let clean_sql = sql.replace(/%20/g, " ");
 
+    // Validate the SQL query
+    if (!isValidQuery(clean_sql)) {
+      res.writeHead(403, { 'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*' });
+      res.end("Forbidden operation. Only SELECT and INSERT queries are allowed.");
+      return;
+    }
+
     con.query(clean_sql, (err, result) => {
       if (err) {
         res.writeHead(400, { 'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*' });
@@ -112,5 +125,11 @@ http.createServer((req, res) => {
   }
 
 }).listen(PORT, () => console.log(`Server is running and listening on port: ${PORT}`));
+
+// Function to validate if the query is a SELECT or INSERT
+function isValidQuery(sql) {
+  const queryType = sql.trim().split(' ')[0].toUpperCase();
+  return queryType === 'SELECT' || queryType === 'INSERT';
+}
 
 console.log("Server is running and listening on port: " + PORT);
