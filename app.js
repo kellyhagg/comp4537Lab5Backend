@@ -10,11 +10,11 @@ const createTableQuery = `
         dateOfBirth DATETIME
     ) ENGINE=InnoDB;
 `;
-const HOST = ""; // TODO: fill, maybe use sql3.freesqldatabase.com
-const USER = ""; // TODO: fill
-const PASSWORD = ""; // TODO: fill
-const DATABASE = ""; // TODO: fill
-const PORT = 3000;
+const HOST = "sql3.freesqldatabase.com	";
+const USER = "sql3690024";
+const PASSWORD = "eUfYHeHLgF";
+const DATABASE = "sql3690024";
+const PORT = 3306;
 
 const con = mysql.createPool({
   host: HOST,
