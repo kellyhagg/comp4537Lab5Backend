@@ -10,7 +10,7 @@ const createTableQuery = `
         dateOfBirth DATETIME
     ) ENGINE=InnoDB;
 `;
-const HOST = "sql3.freesqldatabase.com	";
+const HOST = "sql3.freesqldatabase.com";
 const USER = "sql3690024";
 const PASSWORD = "eUfYHeHLgF";
 const DATABASE = "sql3690024";
