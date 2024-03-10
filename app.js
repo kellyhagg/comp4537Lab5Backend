@@ -1,5 +1,5 @@
 // Import messages from the user.js file
-import messages from './lang/messages/en/user.js';
+import messages from '.lang/messages/en/user.js';
 
 // This file was made with the assistance of ChatGPT-4
 const http = require('http');
@@ -42,7 +42,7 @@ http.createServer((req, res) => {
     pool.query(clean_sql, (err, result) => {
       if (err) {
         res.writeHead(400, { 'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*' });
-        res.end(sqlError);
+        res.end(messages.sqlError);
       } else {
         console.log(result);
         let table = "<table>";
@@ -78,7 +78,7 @@ http.createServer((req, res) => {
       // Validate the SQL query inside the POST data
       if (!isValidQuery(data.query)) {
         res.writeHead(403, { 'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*' });
-        res.end("Forbidden operation. Only SELECT and INSERT queries are allowed.");
+        res.end(messages.forbiddenOperation);
         return;
       }
 
@@ -95,7 +95,7 @@ http.createServer((req, res) => {
         } else {
           console.log(result);
           res.writeHead(200, { 'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*' });
-          res.end(postReceived);
+          res.end(messages.postReceived);
         }
       });
     });
@@ -106,18 +106,18 @@ http.createServer((req, res) => {
     // Validate the SQL query
     if (!isValidQuery(clean_sql)) {
       res.writeHead(403, { 'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*' });
-      res.end(forbiddenOperation);
+      res.end(messages.forbiddenOperation);
       return;
     }
 
     pool.query(clean_sql, (err, result) => {
       if (err) {
         res.writeHead(400, { 'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*' });
-        res.end(sqlError);
+        res.end(messages.sqlError);
       } else {
         console.log(result);
         res.writeHead(200, { 'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*' });
-        res.end(JSON.stringify({ response: `GET request received`, result }));
+        res.end(JSON.stringify({ response: messages.getRequestReceived, result }));
       }
     });
   } else {
