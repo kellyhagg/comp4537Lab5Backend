@@ -6,4 +6,4 @@ const messages = {
     getRequestReceived: 'GET request received'
 };
 
-export default messages;
+module.exports = messages; messages;
