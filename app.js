@@ -1,6 +1,6 @@
 const http = require('http');
 const url = require("url");
-const mysql = require("mysql");
+const { Pool } = require("pg");
 
 // Constants
 const createTableQuery = `
@@ -10,18 +10,26 @@ const createTableQuery = `
         dateOfBirth DATETIME
     ) ENGINE=InnoDB;
 `;
-const HOST = "sql3.freesqldatabase.com";
-const USER = "sql3690024";
-const PASSWORD = "eUfYHeHLgF";
-const DATABASE = "sql3690024";
+
+// const HOST = "sql3.freesqldatabase.com";
+// const USER = "user";
+// const PASSWORD = "HXXCWitQFL4qzBFkK3PWLQ";
+// const DATABASE = "defaultdb";
 const PORT = process.env.PORT || 3306;
 
-const con = mysql.createPool({
-  host: HOST,
-  user: USER,
-  password: PASSWORD,
-  database: DATABASE
+const connectionString = 'postgresql://user:HXXCWitQFL4qzBFkK3PWLQ@pocket-orca-4395.g95.gcp-us-west2.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full';
+
+// Create a new pool using the connection string
+const pool = new Pool({
+  connectionString: connectionString,
 });
+
+// const con = mysql.createPool({
+//   host: HOST,
+//   user: USER,
+//   password: PASSWORD,
+//   database: DATABASE
+// });
 
 http.createServer((req, res) => {
   let q = url.parse(req.url, true);
@@ -37,7 +45,7 @@ http.createServer((req, res) => {
     let sql = pathname.substring(pathname.lastIndexOf('/') + 1);
     let clean_sql = sql.replace(/%20/g, " ");
 
-    con.query(clean_sql, (err, result) => {
+    pool.query(clean_sql, (err, result) => {
       if (err) {
         res.writeHead(400, { 'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*' });
         res.end("SQL error, please check query");
@@ -63,7 +71,7 @@ http.createServer((req, res) => {
       }
     });
 
-    con.query(createTableQuery, (err) => {
+    pool.query(createTableQuery, (err) => {
       if (err) {
         console.error('Error creating the table:', err);
       }
@@ -79,13 +87,13 @@ http.createServer((req, res) => {
         return;
       }
 
-      con.query(createTableQuery, (err) => {
+      pool.query(createTableQuery, (err) => {
         if (err) {
           console.error('Error creating the table:', err);
         }
       });
 
-      con.query(data.query, (err, result) => {
+      pool.query(data.query, (err, result) => {
         if (err) {
           res.writeHead(400, { 'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*' });
           res.end("SQL error, please check SQL query" + err.message);
@@ -107,7 +115,7 @@ http.createServer((req, res) => {
       return;
     }
 
-    con.query(clean_sql, (err, result) => {
+    pool.query(clean_sql, (err, result) => {
       if (err) {
         res.writeHead(400, { 'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*' });
         res.end("SQL error, please check SQL query");
