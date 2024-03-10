@@ -46,8 +46,8 @@ http.createServer((req, res) => {
       } else {
         console.log(result);
         let table = "<table>";
-        for (let i = 0; i < result.length; i++) {
-          table += `<tr><td>${result[i].patientid}</td><td>${result[i].name}</td><td>${result[i].dateOfBirth}</td></tr>`;
+        for (let i = 0; i < result.rows.length; i++) {
+          table += `<tr><td>${result.rows[i].patientid}</td><td>${result.rows[i].name}</td><td>${result.rows[i].dateofbirth.toDateString()}</td></tr>`;
         }
         table += "</table>";
 
