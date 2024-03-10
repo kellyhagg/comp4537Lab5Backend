@@ -5,11 +5,12 @@ const { Pool } = require("pg");
 // Constants
 const createTableQuery = `
     CREATE TABLE IF NOT EXISTS patients (
-        patientid INT(10) UNSIGNED ZEROFILL AUTO_INCREMENT PRIMARY KEY,
+        patientid SERIAL PRIMARY KEY,
         name VARCHAR(100),
-        dateOfBirth DATETIME
-    ) ENGINE=InnoDB;
-`;
+        dateOfBirth TIMESTAMP 
+    );  
+`; //Engine=InnoDB omitted as this does not apply to PostgreSQL
+
 
 // const HOST = "sql3.freesqldatabase.com";
 // const USER = "user";
