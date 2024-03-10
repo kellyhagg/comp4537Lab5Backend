@@ -1,3 +1,7 @@
+// Import messages from the user.js file
+import messages from './lang/messages/en/user.js';
+
+// This file was made with the assistance of ChatGPT-4
 const http = require('http');
 const url = require("url");
 const { Pool } = require("pg");
@@ -11,13 +15,7 @@ const createTableQuery = `
     );  
 `; //Engine=InnoDB omitted as this does not apply to PostgreSQL
 
-
-// const HOST = "sql3.freesqldatabase.com";
-// const USER = "user";
-// const PASSWORD = "HXXCWitQFL4qzBFkK3PWLQ";
-// const DATABASE = "defaultdb";
 const PORT = process.env.PORT || 3306;
-
 const connectionString = 'postgresql://user:HXXCWitQFL4qzBFkK3PWLQ@pocket-orca-4395.g95.gcp-us-west2.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full';
 
 // Create a new pool using the connection string
@@ -25,13 +23,7 @@ const pool = new Pool({
   connectionString: connectionString,
 });
 
-// const con = mysql.createPool({
-//   host: HOST,
-//   user: USER,
-//   password: PASSWORD,
-//   database: DATABASE
-// });
-
+// Create a new server
 http.createServer((req, res) => {
   let q = url.parse(req.url, true);
   let pathname = q.pathname;
@@ -46,10 +38,11 @@ http.createServer((req, res) => {
     let sql = pathname.substring(pathname.lastIndexOf('/') + 1);
     let clean_sql = sql.replace(/%20/g, " ");
 
+    // Validate the SQL query
     pool.query(clean_sql, (err, result) => {
       if (err) {
         res.writeHead(400, { 'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*' });
-        res.end("SQL error, please check query");
+        res.end(sqlError);
       } else {
         console.log(result);
         let table = "<table>";
@@ -72,6 +65,7 @@ http.createServer((req, res) => {
       }
     });
 
+    // Create the table if it does not exist
     pool.query(createTableQuery, (err) => {
       if (err) {
         console.error('Error creating the table:', err);
@@ -101,7 +95,7 @@ http.createServer((req, res) => {
         } else {
           console.log(result);
           res.writeHead(200, { 'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*' });
-          res.end("POST request received");
+          res.end(postReceived);
         }
       });
     });
@@ -112,14 +106,14 @@ http.createServer((req, res) => {
     // Validate the SQL query
     if (!isValidQuery(clean_sql)) {
       res.writeHead(403, { 'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*' });
-      res.end("Forbidden operation. Only SELECT and INSERT queries are allowed.");
+      res.end(forbiddenOperation);
       return;
     }
 
     pool.query(clean_sql, (err, result) => {
       if (err) {
         res.writeHead(400, { 'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*' });
-        res.end("SQL error, please check SQL query");
+        res.end(sqlError);
       } else {
         console.log(result);
         res.writeHead(200, { 'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*' });
@@ -141,4 +135,5 @@ function isValidQuery(sql) {
   return queryType === 'SELECT' || queryType === 'INSERT';
 }
 
+// Log the port that the server is running on
 console.log("Server is running and listening on port: " + PORT);
