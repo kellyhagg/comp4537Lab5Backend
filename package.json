@@ -2,6 +2,7 @@
   "name": "comp4537lab5backend",
   "version": "1.0.0",
   "description": "lab5-backend",
+  "type": "module",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",

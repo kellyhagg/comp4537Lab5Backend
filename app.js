@@ -1,5 +1,5 @@
 // Import messages from the user.js file
-import messages from '.lang/messages/en/user.js';
+const messages = require('./lang/messages/en/user.js');
 
 // This file was made with the assistance of ChatGPT-4
 const http = require('http');
